@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="./index.js"></script>
+    <script>
+        initYomitai(
+            '', 
+            ['Tokyo_NDL'], 
+            '4006032951,4870141469,null,4344035615,4049129825,4152099097,4822289605,4788908077,4163910417,463513010X,447810865X,4344035593'.split(','),
+            function(books) {
+                console.log(books)
+                books.map(function(book) {
+                    console.log(book.statusText)
+                    console.log(book.statusId)
+                })
+            }
+        )
+    </script>
+</body>
+</html>

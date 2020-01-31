@@ -1,0 +1,29 @@
+{
+  "name": "web-yomitai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx npm-run-all clean parcel -p",
+    "parcel": "npx parcel src/index.html",
+    "clean": "npx rimraf build",
+    "build": "npx parcel build src/index.js --out-dir build",
+    "deploy": "npx cpx ./build/index.js ../web/public/yomitai/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CALIL/web-yomitai-js.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CALIL/web-yomitai-js/issues"
+  },
+  "homepage": "https://github.com/CALIL/web-yomitai-js#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "core-js": "^3.6.4",
+    "whatwg-fetch": "^3.0.0"
+  }
+}
