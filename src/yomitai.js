@@ -206,11 +206,11 @@ export default class Yomitai {
             // 検索の途中であれば40点以下は表示しない(例:蔵書なし)
             } else if ((isRunning || data.continue===1) && this.getHighestPriority(book.apiResult) <= 40) {
               // ３個まで検索中にする
-              // if (runningCount <= runningThreshold) {
-              //   statusText = '検索中';
-              //   statusId = 'running';
-              //   runningCount += 1;
-              // }
+              if (runningCount <= runningThreshold) {
+                statusText = '検索中';
+                statusId = 'running';
+                runningCount += 1;
+              }
             } else {
               // 貸出可、 蔵書あり、 館内のみ、 貸出中、 予約中、 準備中、 休館中、 蔵書なし etc
               statusText = this.getHighestPriorityStatus(book.apiResult);

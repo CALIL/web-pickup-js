@@ -8,7 +8,7 @@
     "parcel": "npx parcel src/index.html",
     "clean": "npx rimraf build",
     "build": "npx parcel build src/index.js --out-dir build",
-    "deploy": "npx cpx ./build/index.js ../web/public/yomitai/index.js",
+    "deploy": "npx cpx ./build/index.js ../web/public/yomitai/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
