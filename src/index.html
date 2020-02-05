@@ -4,19 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="../sass/index.sass" />
 </head>
 <body>
+    <div class="popular">
+        <div class="books"><a class="available" id="4101001200" href="/book/4101001200" title="学べるマンガ100冊"><img alt="" src="https://calil.jp/cover/4101001200"></a><a class="available" id="4588622102" href="/book/4588622102" title="数学書として憲法を読む: 前広島市長の憲法・天皇論"><img alt="" src="https://calil.jp/cover/4588622102"></a><a class="lending" id="4062813874" href="/book/4062813874" title="同和と銀行 -三菱東京UFJ“汚れ役”の黒い回顧録 (講談社+α文庫)"><img alt="" src="https://calil.jp/cover/4062813874"></a><a class="available" id="4861823927" href="/book/4861823927" title="モンサント――世界の農業を支配する遺伝子組み換え企業"><img alt="" src="https://calil.jp/cover/4861823927"></a><a class="available" id="4065134137" href="/book/4065134137" title="本屋の新井"><img alt="" src="https://calil.jp/cover/4065134137"></a><a class="lending" id="4023317284" href="/book/4023317284" title="世界最高のチーム グーグル流「最少の人数」で「最大の成果」を生み出す方法"><img alt="" src="https://calil.jp/cover/4023317284"></a><a class="available" id="4163906851" href="/book/4163906851" title="ネメシスの使者"><img alt="" src="https://calil.jp/cover/4163906851"></a><a class="lending" id="4801400558" href="/book/4801400558" title="学びを結果に変えるアウトプット大全 (Sanctuary books)"><img alt="" src="https://calil.jp/cover/4801400558"></a><a class="available" id="4863102135" href="/book/4863102135" title="「目的思考」で学びが変わる—千代田区立麹町中学校長・工藤勇一の挑戦"><img alt="" src="https://calil.jp/cover/4863102135"></a><a class="lending" id="4062200171" href="/book/4062200171" title="ミライの授業"><img alt="" src="https://calil.jp/cover/4062200171"></a><a class="runner" id="4797399244" href="/book/4797399244" title="何があっても「大丈夫。」と思えるようになる 自己肯定感の教科書"><img alt="" src="https://calil.jp/cover/4797399244"></a><a class="runner" id="4344034082" href="/book/4344034082" title="メモの魔力 The Magic of Memos (NewsPicks Book)"><img alt="" src="https://calil.jp/cover/4344034082"></a></div>
+    </div>
     <script src="./index.js"></script>
     <script>
         initYomitai(
             '', 
-            ['Tokyo_NDL'], 
-            '4006032951,4870141469,null,4344035615,4049129825,4152099097,4822289605,4788908077,4163910417,463513010X,447810865X,4344035593'.split(','),
+            ['Tokyo_NDL', 'Kyoto_Kyoto', 'Gifu_Nakatsugawa', 'Tokyo_Shibuya'], 
+            [
+                "4101001200",
+                "4588622102",
+                "4062813874",
+                "4861823927",
+                "4065134137",
+                "4023317284",
+                "4163906851",
+                "4801400558",
+                "4863102135",
+                "4062200171",
+                "4797399244",
+                "4344034082"
+            ],
             function(books) {
                 console.log(books)
                 books.map(function(book) {
-                    console.log(book.statusText)
-                    console.log(book.statusId)
+                    if (book.isbn) {
+                        document.getElementById(book.isbn).className = book.statusId;
+                    }
                 })
             }
         )
