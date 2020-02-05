@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx npm-run-all clean parcel -p",
+    "start": "npx npm-run-all parcel -p",
     "parcel": "npx parcel src/index.html",
-    "clean": "npx rimraf build",
     "build": "npx parcel build src/index.js sass/index.sass --out-dir build",
     "deploy": "npx cpx ./build/index.js ../web/public/yomitai/",
     "test": "echo \"Error: no test specified\" && exit 1"
