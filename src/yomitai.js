@@ -58,28 +58,28 @@ export default class Yomitai {
         return libkeys;
     }
 
-    /**
-     * ステータスの優先順位を数字で取得
-     * @returns {number}
-     */
-    getPriority(status) {
-        var priorities = {
-            "貸出可": 100,
-            "蔵書あり": 90,
-            "館内のみ": 80,
-            "貸出中": 70,
-            "準備中": 60,
-            "予約中": 50,
-            "蔵書なし": 40
-        };
-        if (priorities[status]) {
-            return parseInt(priorities[status]);
-            //その他 行方不明,長期延滞,etc
-        } else if (status != undefined && status != '') {
-            return 10;
-        }
-        return 0;
-    }
+    // /**
+    //  * ステータスの優先順位を数字で取得
+    //  * @returns {number}
+    //  */
+    // getPriority(status) {
+    //     var priorities = {
+    //         "貸出可": 100,
+    //         "蔵書あり": 90,
+    //         "館内のみ": 80,
+    //         "貸出中": 70,
+    //         "準備中": 60,
+    //         "予約中": 50,
+    //         "蔵書なし": 40
+    //     };
+    //     if (priorities[status]) {
+    //         return parseInt(priorities[status]);
+    //         //その他 行方不明,長期延滞,etc
+    //     } else if (status != undefined && status != '') {
+    //         return 10;
+    //     }
+    //     return 0;
+    // }
 
 
     /**
@@ -142,81 +142,81 @@ export default class Yomitai {
     }
 
 
-    old(data) {
-        let runningCount = 1;
-        let runningThreshold = 3; // 検索中を表示する数
-        this.props.books.map((book) => {
-            // ステータスコンポーネントに渡す statusId,statusTextを作る
-            let statusText = '';
-            let statusId = 'nostatus';
-            if (data.books[book.isbn]) {
-                book.apiResult = data.books[book.isbn];
-                // 検索完了
-                if (data.continue === 0) {
-                    // すべてのシステムがError
-                    let isErrorAll = true;
-                    for (let systemid in data) {
-                        if (data[systemid].status !== 'Error') {
-                            isErrorAll = false;
-                        }
-                    }
-                    if (isErrorAll) {
-                        statusId = 'error';
-                        statusText = '検索失敗';
-                        // libkeyがひとつもない->蔵書なし
-                    } else if (Object.keys(this.getLibkeys(book.apiResult)).length == 0) {
-                        statusId = '';
-                        statusText = '蔵書なし';
-                        // 結果を表示
-                    } else {
-                        // 貸出可、 蔵書あり、 館内のみ、 貸出中、 予約中、 準備中、 休館中、 蔵書なし etc
-                        statusText = this.getHighestPriorityStatus(book.apiResult);
-                        statusId = this.getStatusId(statusText);
-                    }
-                    // 検索途中
-                } else if (book.apiResult !== null) {
-                    // すべてのlibkey.statusがOKorCacheで、libkeyがない->蔵書なし
-                    let isRunning = false;
-                    for (let systemid in book.apiResult) {
-                        if (book.apiResult[systemid].status === 'Running') {
-                            isRunning = true;
-                        }
-                    }
-                    if (isRunning === false && Object.keys(this.getLibkeys(book.apiResult)).length == 0) {
-                        statusId = '';
-                        statusText = '蔵書なし';
-                        // 検索の途中であれば40点以下は表示しない(例:蔵書なし)
-                    } else if ((isRunning || data.continue === 1) && this.getHighestPriority(book.apiResult) <= 40) {
-                        // ３個まで検索中にする
-                        if (runningCount <= runningThreshold) {
-                            statusText = '検索中';
-                            statusId = 'running';
-                            runningCount += 1;
-                        }
-                    } else {
-                        // 貸出可、 蔵書あり、 館内のみ、 貸出中、 予約中、 準備中、 休館中、 蔵書なし etc
-                        statusText = this.getHighestPriorityStatus(book.apiResult);
-                        statusId = this.getStatusId(statusText);
-                    }
-                }
-                // まだAPIの結果が来ていない
-            } else {
-                // ３個まで検索中にする
-                if (runningCount <= runningThreshold) {
-                    statusText = '検索中';
-                    statusId = 'running';
-                    runningCount += 1;
-                }
-            }
-            if (data.status === 'timeout') {
-                book.statusText = 'タイムアウト';
-                book.statusId = 'error';
-            } else {
-                book.statusText = statusText;
-                book.statusId = statusId;
-            }
-        });
-    }
+    // old(data) {
+    //     let runningCount = 1;
+    //     let runningThreshold = 3; // 検索中を表示する数
+    //     this.props.books.map((book) => {
+    //         // ステータスコンポーネントに渡す statusId,statusTextを作る
+    //         let statusText = '';
+    //         let statusId = 'nostatus';
+    //         if (data.books[book.isbn]) {
+    //             book.apiResult = data.books[book.isbn];
+    //             // 検索完了
+    //             if (data.continue === 0) {
+    //                 // すべてのシステムがError
+    //                 let isErrorAll = true;
+    //                 for (let systemid in data) {
+    //                     if (data[systemid].status !== 'Error') {
+    //                         isErrorAll = false;
+    //                     }
+    //                 }
+    //                 if (isErrorAll) {
+    //                     statusId = 'error';
+    //                     statusText = '検索失敗';
+    //                     // libkeyがひとつもない->蔵書なし
+    //                 } else if (Object.keys(this.getLibkeys(book.apiResult)).length == 0) {
+    //                     statusId = '';
+    //                     statusText = '蔵書なし';
+    //                     // 結果を表示
+    //                 } else {
+    //                     // 貸出可、 蔵書あり、 館内のみ、 貸出中、 予約中、 準備中、 休館中、 蔵書なし etc
+    //                     statusText = this.getHighestPriorityStatus(book.apiResult);
+    //                     statusId = this.getStatusId(statusText);
+    //                 }
+    //                 // 検索途中
+    //             } else if (book.apiResult !== null) {
+    //                 // すべてのlibkey.statusがOKorCacheで、libkeyがない->蔵書なし
+    //                 let isRunning = false;
+    //                 for (let systemid in book.apiResult) {
+    //                     if (book.apiResult[systemid].status === 'Running') {
+    //                         isRunning = true;
+    //                     }
+    //                 }
+    //                 if (isRunning === false && Object.keys(this.getLibkeys(book.apiResult)).length == 0) {
+    //                     statusId = '';
+    //                     statusText = '蔵書なし';
+    //                     // 検索の途中であれば40点以下は表示しない(例:蔵書なし)
+    //                 } else if ((isRunning || data.continue === 1) && this.getHighestPriority(book.apiResult) <= 40) {
+    //                     // ３個まで検索中にする
+    //                     if (runningCount <= runningThreshold) {
+    //                         statusText = '検索中';
+    //                         statusId = 'running';
+    //                         runningCount += 1;
+    //                     }
+    //                 } else {
+    //                     // 貸出可、 蔵書あり、 館内のみ、 貸出中、 予約中、 準備中、 休館中、 蔵書なし etc
+    //                     statusText = this.getHighestPriorityStatus(book.apiResult);
+    //                     statusId = this.getStatusId(statusText);
+    //                 }
+    //             }
+    //             // まだAPIの結果が来ていない
+    //         } else {
+    //             // ３個まで検索中にする
+    //             if (runningCount <= runningThreshold) {
+    //                 statusText = '検索中';
+    //                 statusId = 'running';
+    //                 runningCount += 1;
+    //             }
+    //         }
+    //         if (data.status === 'timeout') {
+    //             book.statusText = 'タイムアウト';
+    //             book.statusId = 'error';
+    //         } else {
+    //             book.statusText = statusText;
+    //             book.statusId = statusId;
+    //         }
+    //     });
+    // }
 
 
     new(data) {
@@ -232,7 +232,7 @@ export default class Yomitai {
                     if (statusText === '') {
                         statusId = this.getStatusId(libkey);
                         statusText = libkey;
-                        // 貸出可が来たときに入れる
+                    // 貸出可が来たときに入れる
                     } else if (libkey === '貸出可') {
                         statusId = this.getStatusId(libkey);
                         statusText = libkey;
