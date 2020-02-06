@@ -30,7 +30,6 @@
                 "4344034082"
             ],
             function(books) {
-                // console.log(books)
                 books.map(function(book) {
                     if (book.isbn) {
                         document.getElementById(book.isbn).classList.add(book.statusId);
@@ -54,10 +53,7 @@
                 "4344034082"
             ],
             function(lightness) {
-                // console.log(lightness)
                 for(key in lightness) {
-                    console.log(lightness[key].L)
-                    console.log(key)
                     document.getElementById(key).classList.add(lightness[key].L > 0.5 ? 'light' : 'dark');
                 }
             }
