@@ -12,48 +12,36 @@
     </div>
     <script src="./index.js"></script>
     <script>
+        var isbns = [
+            "4101001057",
+            "4101001219",
+            "4101001014",
+            "4861823927",
+            "4065134137",
+            "4023317284",
+            "4163906851",
+            "4801400558",
+            "4863102135",
+            "4062200171",
+            "4797399244",
+            "4344034082"
+        ].sort(function() { Math.random() - .5; });
         initYomitai(
             '', 
             ['Tokyo_NDL', 'Gifu_Nakatsugawa'], 
-            [
-                "4101001057",
-                "4101001219",
-                "4101001014",
-                "4861823927",
-                "4065134137",
-                "4023317284",
-                "4163906851",
-                "4801400558",
-                "4863102135",
-                "4062200171",
-                "4797399244",
-                "4344034082"
-            ],
+            isbns,
             function(books) {
                 // console.log(books)
                 books.map(function(book) {
                     if (book.isbn) {
-                        console.log(book.statusId)
+                        // console.log(book.statusId)
                         document.getElementById(book.isbn).classList.add(book.statusId);
                     }
                 })
             }
         )
         initLightness(
-            [
-                "4101001057",
-                "4101001219",
-                "4101001014",
-                "4861823927",
-                "4065134137",
-                "4023317284",
-                "4163906851",
-                "4801400558",
-                "4863102135",
-                "4062200171",
-                "4797399244",
-                "4344034082"
-            ],
+            isbns,
             function(lightness) {
                 // console.log(lightness)
                 for(key in lightness) {

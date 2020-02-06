@@ -227,36 +227,26 @@ export default class Yomitai {
             let statusText = '';
             let statusId = 'nostatus';
             if (data.books[book.isbn]) {
-                if (data.books[book.isbn]) {
-                    const libkeys = this.getLibkeys(data.books[book.isbn]);
-                    for (let key in libkeys) {
-                        // console.log(libkeys[key])
-                        // 空なら来たやつを入れる
-                        if (statusText==='') {
-                            statusId = this.getStatusId(libkeys[key]);
-                            statusText = libkeys[key];
+                Object.values(this.getLibkeys(data.books[book.isbn])).map((libkey) => {
+                    // 空なら来たやつを入れる
+                    if (statusText === '') {
+                        statusId = this.getStatusId(libkey);
+                        statusText = libkey;
                         // 貸出可が来たときに入れる
-                        } else if (libkeys[key]==='貸出可') {
-                            statusId = this.getStatusId(libkeys[key]);
-                            statusText = libkeys[key];
-                        }
+                    } else if (libkey === '貸出可') {
+                        statusId = this.getStatusId(libkey);
+                        statusText = libkey;
                     }
-                }
+                })
             } else {
-                // ３個まで検索中にする
                 if (runningCount <= runningThreshold) {
                     statusText = '検索中';
                     statusId = 'running';
                     runningCount += 1;
                 }
             }
-            if (data.status === 'timeout') {
-                book.statusText = 'タイムアウト';
-                book.statusId = 'error';
-            } else {
-                book.statusText = statusText;
-                book.statusId = statusId;
-            }
+            book.statusText = statusText;
+            book.statusId = statusId;
         });
     }
 
@@ -279,10 +269,16 @@ export default class Yomitai {
             if (data.continue === 0) {
                 this.api_calil.kill();
             }
-
-            // this.old(data)
-            this.new(data)
-            this.props.callback(this.props.books)
+            if (data.status === 'timeout') {
+                this.props.books.map((book) => {
+                    book.statusText = 'タイムアウト';
+                    book.statusId = 'error';
+                });
+            } else {
+                // this.old(data);
+                this.new(data);
+            }
+            this.props.callback(this.props.books);
         });
 
     }
