@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx npm-run-all parcel -p",
     "parcel": "npx parcel src/index.html",
-    "build": "npx parcel build src/index.js sass/index.sass --out-dir build",
+    "build": "npx parcel build src/index.js --out-dir build",
     "deploy": "npx cpx ./build/index.js ../web/public/yomitai/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
