@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx npm-run-all parcel -p",
-    "parcel": "npx parcel src/index.html",
-    "build": "npx parcel build src/index.js --out-dir build",
-    "deploy": "npx cpx ./build/index.js ../web/public/yomitai/",
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.js --out-dir docs",
+    "deploy": "cpx ./docs/index.js ../web/public/yomitai/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "preinstall": "npx npm-force-resolutions"
   },
@@ -23,6 +22,7 @@
   "homepage": "https://github.com/CALIL/web-yomitai-js#readme",
   "devDependencies": {
     "cssnano": "^4.1.10",
+    "parcel-bundler": "^1.12.5",
     "sass": "^1.26.3"
   },
   "dependencies": {
