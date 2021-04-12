@@ -13,6 +13,10 @@ npm start
 
 buildフォルダのindex.htmlは、css,jsのパスが変更してあるので、そのまま維持すること
 
+## デモ
+
+https://calil.github.io/web-yomitai-js/
+
 ## 運用とデプロイ
 
 - npm run deploy  
