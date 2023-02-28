@@ -15,7 +15,7 @@ buildフォルダのindex.htmlは、css,jsのパスが変更してあるので�
 
 ## デモ
 
-https://calil.github.io/web-yomitai-js/
+https://calil.github.io/web-pickup-js/
 
 ## 運用とデプロイ
 
