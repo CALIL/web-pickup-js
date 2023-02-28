@@ -1,4 +1,4 @@
-# web-yomitai-js
+# web-pickup-js
 
 カーリルWebトップページのみんなが読みたいの蔵書表示用のJavascript  
 
