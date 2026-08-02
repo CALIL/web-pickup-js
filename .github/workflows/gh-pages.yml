@@ -1,0 +1,53 @@
+name: Build and Deploy
+
+# GitHub Pages への配信。docs/ の内容をそのまま公開する。
+#
+# 以前は「Deploy from a branch（master の /docs）」でリポジトリを直接読ませていたが、
+# 公式 Action でアーティファクトを渡す方式に統一している。
+#
+# 前提: リポジトリ設定 Settings → Pages → Source が "GitHub Actions" であること。
+# "Deploy from a branch" のままだと、このワークフローは成功しても公開内容が
+# 更新されない（古い内容が配信され続ける）。
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions: {}
+
+# 配信が同時に走らないよう直列化する
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      # ビルド済みのファイルをコミットしているので、docs/ をそのまま渡す
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write      # Pages へ配信する
+      id-token: write   # 配信元を検証する OIDC トークンの発行
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
