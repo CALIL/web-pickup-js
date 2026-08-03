@@ -23,11 +23,11 @@
   "devDependencies": {
     "cssnano": "^4.1.10",
     "parcel-bundler": "^1.12.5",
-    "sass": "^1.26.3"
+    "sass": "^1.102.0"
   },
   "dependencies": {
-    "core-js": "^3.6.4",
-    "whatwg-fetch": "^3.0.0"
+    "core-js": "^3.49.0",
+    "whatwg-fetch": "^3.6.20"
   },
   "resolutions": {
     "minimist": "^1.2.5"
