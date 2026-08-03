@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   ci:
-    name: ビルドとテスト
+    name: ビルド
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -44,8 +44,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Test
-        run: npm test
-
+      # このリポジトリにはテストがありません。package.json の test は
+      # 「no test specified」のままで、実行すると必ず exit 1 になります。
+      # テストを書いたら Test ステップを戻してください。
       - name: Build
         run: npm run build
