@@ -8,9 +8,6 @@
 
  */
 
-import "core-js/stable";
-import 'whatwg-fetch';
-
 // Todo: タイムアウトの実装
 
 var ENDPOINT = 'https://api.calil.jp/';

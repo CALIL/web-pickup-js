@@ -20,13 +20,6 @@
   },
   "homepage": "https://github.com/CALIL/web-yomitai-js#readme",
   "devDependencies": {
-    "@babel/core": "^8.0.1",
-    "@babel/preset-env": "^8.0.2",
-    "terser": "^5.49.0",
     "vite": "^8.2.0"
-  },
-  "dependencies": {
-    "core-js": "^3.49.0",
-    "whatwg-fetch": "^3.6.20"
   }
 }
