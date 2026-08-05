@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CALIL/web-yomitai-js.git"
+    "url": "git+https://github.com/CALIL/web-pickup-js.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CALIL/web-yomitai-js/issues"
+    "url": "https://github.com/CALIL/web-pickup-js/issues"
   },
-  "homepage": "https://github.com/CALIL/web-yomitai-js#readme",
+  "homepage": "https://github.com/CALIL/web-pickup-js#readme",
   "devDependencies": {
     "vite": "^8.2.0"
   }
