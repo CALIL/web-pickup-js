@@ -14,8 +14,11 @@
             </div>
         </div>
     </div>
-    <script src="./index.js"></script>
-    <script>
+    <!-- 開発サーバー（vite）は index.js を ES モジュールとして配信するため type="module" が必要。
+         module は記述順に実行されるので、下のインラインスクリプトも module にして順序を保つ。
+         配信物 docs/index.html は IIFE を読む classic script のままでよい。 -->
+    <script type="module" src="./index.js"></script>
+    <script type="module">
         var isbns = [
             "4101001057",
             "4101001219",
