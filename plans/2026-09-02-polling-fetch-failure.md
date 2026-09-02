@@ -73,8 +73,9 @@ yomitai リポジトリの `ui/src/CalilAPI.ts` と同じ **上限付き指数�
 
 ## テスト
 
-このリポジトリにはテストがない（`npm test` はプレースホルダ）。`node` で `fetch` と `window` をモックした
-スクラッチスクリプトで次を確認する。
+`test/api_calil.test.mjs` に Node 標準の `node:test` で書く。`fetch` と `window` をグローバルに差し込む
+だけで jsdom は使わない。`npm test` が `node --test` を呼び、CI（`.github/workflows/ci.yml`）の Test
+ステップでも走る。
 
 1. 最初の `check` の fetch が reject し続けたとき、`unhandledRejection` が発生せず、5回リトライした後に
    `status: 'timeout'` で callback が1回だけ呼ばれ、`killed` が true になる

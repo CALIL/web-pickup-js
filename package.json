@@ -6,8 +6,8 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "deploy": "cpx ./docs/index.js ../web4/public/yomitai/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "vite build && cpx ./docs/index.js ../web4/public/yomitai/",
+    "test": "node --test"
   },
   "repository": {
     "type": "git",

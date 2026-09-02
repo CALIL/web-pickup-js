@@ -44,8 +44,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      # このリポジトリにはテストがありません。package.json の test は
-      # 「no test specified」のままで、実行すると必ず exit 1 になります。
-      # テストを書いたら Test ステップを戻してください。
+      - name: Test
+        run: npm test
+
       - name: Build
         run: npm run build
