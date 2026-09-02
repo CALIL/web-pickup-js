@@ -37,8 +37,12 @@ export class check {
     this.data = null;
     this.session = null;
     this.pollingInterval = 1000; // ポーリング間隔
-    this.pollingTime = 0;
+    this.pollingStart = Date.now(); // ポーリング開始時刻(エポックms)
     this.pollingTimeout = 300000; // タイムアウト
+    this.retryCount = 0; // 連続失敗回数
+    this.maxRetries = 5; // 連続失敗の上限。超えたら timeout として通知して止める
+    // ページ離脱による実行中fetchの中断は正常系。リトライしない
+    window.addEventListener('pagehide', () => this.kill());
     this.search(isbns, sytemids);
   }
 
@@ -47,7 +51,32 @@ export class check {
    */
   kill() {
     this.killed = true;
-    this.pollingTime = 0;
+  }
+
+  /**
+   * リトライ共通処理
+   * 上限までは指数バックオフ(1s,2s,4s,8s,16s)で再試行し、超えたら timeout として callback に通知して止める
+   */
+  retry(fn) {
+    if (this.killed) return;
+    if (this.retryCount >= this.maxRetries) {
+      this.giveUp();
+      return;
+    }
+    const delay = this.pollingInterval * Math.pow(2, this.retryCount);
+    this.retryCount++;
+    setTimeout(fn, delay);
+  }
+
+  /**
+   * 諦めて timeout として通知する
+   */
+  giveUp() {
+    this.kill();
+    const data = this.data || {};
+    data.status = 'timeout';
+    data.continue = 0;
+    this.callback(data);
   }
 
   search(isbns, systemids) {
@@ -59,13 +88,15 @@ export class check {
         format: 'json',
         callback: 'no'
       }).then((r) => {
-        console.log(r)
         if (r.status===200) {
-          // console.log(r.json())
+          this.retryCount = 0;
           r.json().then((data) => this.receive(data));
         } else {
-          setTimeout(()=> this.search(), this.pollingInterval)
+          this.retry(() => this.search(isbns, systemids));
         }
+      }).catch(() => {
+        // 通信断・バックグラウンド化など。未処理の拒否にせずリトライする
+        this.retry(() => this.search(isbns, systemids));
       })
     }
   }
@@ -78,10 +109,13 @@ export class check {
         callback: 'no'
       }).then((r) => {
         if (r.status===200) {
+          this.retryCount = 0;
           r.json().then((data) => this.receive(data));
         } else {
-          setTimeout(()=> this.polling(), this.pollingInterval)
+          this.retry(() => this.polling());
         }
+      }).catch(() => {
+        this.retry(() => this.polling());
       })
     }
   }
@@ -89,7 +123,7 @@ export class check {
   receive(data) {
     if (!this.killed) {
       this.data = data;
-      if (this.pollingTime >= this.pollingTimeout) {
+      if (Date.now() - this.pollingStart >= this.pollingTimeout) {
         this.data.status = 'timeout';
       }
       if(this.data.session) {
@@ -102,7 +136,6 @@ export class check {
       } else {
         console.log('[Calil] complete.');
       }
-      this.pollingTime += this.pollingInterval;
     }
   }
 }
