@@ -67,3 +67,54 @@ test('pagehide 後は fetch が reject してもリトライしない', async ()
   assert.equal(cb.length, 0);
   assert.equal(unhandled.length, 0);
 });
+
+test('200 応答でも json() が reject したら未処理の拒否にせずリトライして復帰する', async () => {
+  let n = 0; const cb = [];
+  const broken = () => Promise.resolve({ status: 200, json: () => Promise.reject(new TypeError('Failed to fetch')) });
+  globalThis.fetch = () => {
+    n++;
+    if (n === 1) return ok({ session: 'S', continue: 1, books: {} });
+    if (n === 2) return broken();
+    return ok({ session: 'S', continue: 0, books: { '1': { s: { status: 'OK', libkey: { a: '貸出可' } } } } });
+  };
+  const c = new check('k', '1', 's', (d) => cb.push(d));
+  c.pollingInterval = 1;
+  await sleep(100);
+  assert.equal(n, 3);
+  assert.equal(cb.length, 2);
+  assert.equal(cb[1].continue, 0);
+  assert.equal(c.retryCount, 0);
+  assert.equal(unhandled.length, 0);
+});
+
+test('search の json() が reject したら retryCount が増えてリトライが予約される', async () => {
+  let n = 0; const cb = [];
+  globalThis.fetch = () => {
+    n++;
+    if (n === 1) return Promise.resolve({ status: 200, json: () => Promise.reject(new TypeError('Failed to fetch')) });
+    return new Promise(() => {}); // 2回目以降は保留にして観測する
+  };
+  const c = new check('k', '1', 's', (d) => cb.push(d));
+  c.pollingInterval = 50;
+  await sleep(10);
+  assert.equal(n, 1);
+  assert.equal(c.retryCount, 1);
+  assert.equal(unhandled.length, 0);
+  await sleep(60);
+  assert.equal(n, 2);
+  assert.equal(cb.length, 0);
+  c.kill();
+});
+
+test('200 応答でも json() が reject し続けたら5回リトライ後に timeout で1回だけ callback を呼ぶ', async () => {
+  let calls = 0; const cb = [];
+  globalThis.fetch = () => { calls++; return Promise.resolve({ status: 200, json: () => Promise.reject(new TypeError('Failed to fetch')) }); };
+  const c = new check('k', '1', 's', (d) => cb.push(d));
+  c.pollingInterval = 1;
+  await sleep(200);
+  assert.equal(calls, 6);
+  assert.equal(cb.length, 1);
+  assert.equal(cb[0].status, 'timeout');
+  assert.equal(c.killed, true);
+  assert.equal(unhandled.length, 0);
+});
