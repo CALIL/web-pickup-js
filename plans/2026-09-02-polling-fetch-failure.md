@@ -95,3 +95,46 @@ yomitai リポジトリの `ui/src/CalilAPI.ts` と同じ **上限付き指数�
 
 デプロイの翌週、web4-js の WEB4-JS-8 / 54 / 55 / 53 / E に新規イベントが増えないこと。
 WEB4-JS-A（スタックなしの `Load failed`）も減れば同じ出所だったことが確定する。
+
+## 追記（2026-09-04）: 反映後も残る Failed to fetch
+
+2026-09-02 の反映で web4-js の WEB4-JS-8 は 38件/日 → 15件/日 に減ったが止まっていない。
+WEB4-JS-A（スタックなしの `Load failed`）は 16件/日 → 1.6件/日 に減り、同じ出所だったことは確定した。
+WEB4-JS-8 の最新イベントのスタックには新バンドルの `retryCount` / `giveUp` が写っており、新コードで起きている。
+
+### 原因
+
+`search()` / `polling()` は `_request(...).then(...).catch(...)` で **fetch 自体の reject** は拾うが、
+200 応答の本文を読む `r.json()` は
+
+```js
+r.json().then((data) => this.receive(data));
+```
+
+と別の Promise チェーンで、catch がない。Chrome は本文の受信中に回線が切れると `json()` を
+`TypeError: Failed to fetch` で reject するため、ここが未処理の拒否として残る。
+Sentry の分布が Android の Chrome Mobile 中心で変わっていないのも整合する。
+
+### 追加修正
+
+`json()` の失敗だけをリトライに乗せる。`receive()` やその先の callback で起きた例外まで握らないよう、
+`.catch` ではなく `then` の第2引数で受ける。`search()` と `polling()` の両方。
+
+```js
+        if (r.status===200) {
+          this.retryCount = 0;
+          r.json().then(
+            (data) => this.receive(data),
+            () => this.retry(() => this.polling())   // search() 側は () => this.search(isbns, systemids)
+          );
+        } else {
+```
+
+### テスト
+
+`test/api_calil.test.mjs` に追加: 200 応答だが `json()` が reject するとき、`unhandledRejection` が
+発生せず、`retryCount` が増えてリトライが予約されること。
+
+### 確認
+
+web4 に取り込んで反映後、WEB4-JS-8 の新規イベントが 0 になること。

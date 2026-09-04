@@ -90,7 +90,10 @@ export class check {
       }).then((r) => {
         if (r.status===200) {
           this.retryCount = 0;
-          r.json().then((data) => this.receive(data));
+          r.json().then(
+            (data) => this.receive(data),
+            () => this.retry(() => this.search(isbns, systemids))
+          );
         } else {
           this.retry(() => this.search(isbns, systemids));
         }
@@ -110,7 +113,10 @@ export class check {
       }).then((r) => {
         if (r.status===200) {
           this.retryCount = 0;
-          r.json().then((data) => this.receive(data));
+          r.json().then(
+            (data) => this.receive(data),
+            () => this.retry(() => this.polling())
+          );
         } else {
           this.retry(() => this.polling());
         }
