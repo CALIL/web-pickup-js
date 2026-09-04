@@ -89,9 +89,8 @@ export class check {
         callback: 'no'
       }).then((r) => {
         if (r.status===200) {
-          this.retryCount = 0;
           r.json().then(
-            (data) => this.receive(data),
+            (data) => { this.retryCount = 0; this.receive(data); },
             () => this.retry(() => this.search(isbns, systemids))
           );
         } else {
@@ -112,9 +111,8 @@ export class check {
         callback: 'no'
       }).then((r) => {
         if (r.status===200) {
-          this.retryCount = 0;
           r.json().then(
-            (data) => this.receive(data),
+            (data) => { this.retryCount = 0; this.receive(data); },
             () => this.retry(() => this.polling())
           );
         } else {

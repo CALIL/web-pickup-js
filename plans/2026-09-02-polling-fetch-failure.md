@@ -122,9 +122,8 @@ Sentry の分布が Android の Chrome Mobile 中心で変わっていないの�
 
 ```js
         if (r.status===200) {
-          this.retryCount = 0;
           r.json().then(
-            (data) => this.receive(data),
+            (data) => { this.retryCount = 0; this.receive(data); },  // リセットは本文が読めてから
             () => this.retry(() => this.polling())   // search() 側は () => this.search(isbns, systemids)
           );
         } else {

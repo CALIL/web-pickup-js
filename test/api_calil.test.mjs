@@ -105,3 +105,16 @@ test('search の json() が reject したら retryCount が増えてリトライ
   assert.equal(cb.length, 0);
   c.kill();
 });
+
+test('200 応答でも json() が reject し続けたら5回リトライ後に timeout で1回だけ callback を呼ぶ', async () => {
+  let calls = 0; const cb = [];
+  globalThis.fetch = () => { calls++; return Promise.resolve({ status: 200, json: () => Promise.reject(new TypeError('Failed to fetch')) }); };
+  const c = new check('k', '1', 's', (d) => cb.push(d));
+  c.pollingInterval = 1;
+  await sleep(200);
+  assert.equal(calls, 6);
+  assert.equal(cb.length, 1);
+  assert.equal(cb[0].status, 'timeout');
+  assert.equal(c.killed, true);
+  assert.equal(unhandled.length, 0);
+});
